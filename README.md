@@ -24,7 +24,7 @@ You will need to sign up for an API key from [Financial Modeling Prep](https://f
 ## License
 MIT License
 
-![image alt]()
+![image alt](https://github.com/Nicholus22/financial-etl-dashboard/blob/13187c874bbc19398a1bf63976fc778ee0878213/financial%20etl_1.png)
 ![image alt]()
 
 
