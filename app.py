@@ -1,0 +1,40 @@
+import dash
+from dash import dcc, html
+import plotly.express as px
+import pandas as pd
+from dash.dependencies import Input, Output
+from sqlalchemy import create_engine
+
+app = dash.Dash(__name__)
+
+# Set up the database connection
+engine = create_engine('sqlite:///financials.db', echo=False)
+
+def fetch_data(symbol, table_name):
+    query = f"SELECT * FROM {table_name} WHERE symbol = '{symbol}'"
+    return pd.read_sql(query, con=engine)
+
+app.layout = html.Div([
+    html.H1("Financial Dashboard"),
+    dcc.Dropdown(
+        id='symbol-dropdown',
+        options=[
+            {'label': 'Apple', 'value': 'AAPL'},
+            {'label': 'Microsoft', 'value': 'MSFT'},
+        ],
+        value='AAPL',
+    ),
+    dcc.Graph(id='income-graph'),
+])
+
+@app.callback(
+    Output('income-graph', 'figure'),
+    [Input('symbol-dropdown', 'value')]
+)
+def update_graph(symbol):
+    income_df = fetch_data(symbol, f'{symbol}_income_statement')
+    income_fig = px.line(income_df, x='date', y='revenue', title=f'{symbol} Revenue Over Time')
+    return income_fig
+
+if __name__ == '__main__':
+    app.run(debug=True)
